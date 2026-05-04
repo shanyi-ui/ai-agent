@@ -1,6 +1,22 @@
 ### CUSTOM ###
 application-local.yml
 
+# Milvus Docker 挂载的数据卷目录
+# 这个目录包含数据库的核心数据，绝对不能提交到 Git
+/volumes/
+
+# 环境配置（可选）
+# 如果你以后创建了 .env 文件来存储敏感的数据库密码或 API Key
+.env
+*.env
+
+# 如果你使用的是 macOS，排除这些系统生成的隐藏文件
+.DS_Store
+
+# Java 编译产生的目标文件夹 (通常在 Spring Boot 项目中默认已有，如果没有请加上)
+/target/
+
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
