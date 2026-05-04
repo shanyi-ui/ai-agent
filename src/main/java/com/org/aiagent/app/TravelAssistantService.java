@@ -1,5 +1,7 @@
 package com.org.aiagent.app;
 
+import cn.hutool.core.date.DateUtil;
+import com.org.aiagent.app.tools.TravelTools;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -16,44 +18,45 @@ import org.springframework.stereotype.Service;
 @Service
 public class TravelAssistantService {
 
-    // 1. 定义 LangChain4j 的声明式 AI 接口 (黑魔法核心：只需要定义接口和注解)
     interface TravelAgent {
         @SystemMessage({
-                "你是一位深耕文旅行业的‘智能旅游推荐大师’。",
-                "你的职责是为用户提供精准、个性化的旅游路线规划、景点推荐和避坑指南。",
-                "请务必优先参考检索到的独家知识库攻略来回答用户的问题。",
-                "语气要热情、专业，像一位资深的导游朋友。"
+                "你是一位专业的‘智能旅游推荐大师’。现在的真实时间是：{{currentDate}}。",
+                "【核心原则】",
+                "1. 优先级最高：当前的真实时间（{{currentDate}}）是唯一准确的时间基准。如果知识库（PDF）里的建议与当前月份不符，请【绝对不要】采纳知识库里的旧建议。",
+                "2. 知识库使用规范：仅参考知识库中的景点描述、特色路线和避坑指南。如果知识库里提到‘现在是10月’，请忽略它，因为现在是5月。",
+                "3. 工具使用规范：只要涉及‘明天’、‘周末’或‘具体天气’，必须调用 getWeather 工具，严禁根据知识库的旧天气信息进行猜测。"
         })
-            // @MemoryId 用于区分不同用户的聊天窗口，实现千人千面的记忆
-        TokenStream chat(@MemoryId String sessionId, @UserMessage String userMessage);
+        TokenStream chat(
+                @MemoryId String sessionId,
+                @dev.langchain4j.service.V("currentDate") String currentDate,
+                @UserMessage String userMessage
+        );
     }
 
     private final TravelAgent travelAgent;
 
-    // 2. 在构造函数中，将大脑、记忆和 Milvus 数据库组装起来！
     public TravelAssistantService(StreamingChatLanguageModel chatModel,
                                   EmbeddingStore<TextSegment> embeddingStore,
-                                  EmbeddingModel embeddingModel) {
+                                  EmbeddingModel embeddingModel,
+                                  TravelTools travelTools) {
 
-        // A. 配置 RAG 检索器：让大模型在每次回答前，先去 Milvus 里面查相关的旅游攻略
         EmbeddingStoreContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(embeddingStore)
                 .embeddingModel(embeddingModel)
-                .maxResults(3) // 每次最多抓取 3 段最相关的攻略文本
-                .minScore(0.7) // 相似度低于 0.7 的不要，防止胡说八道
+                .maxResults(3)
+                .minScore(0.7)
                 .build();
 
-        // B. 组装终极 Agent：注入流式大模型、动态记忆体、知识库检索器
         this.travelAgent = AiServices.builder(TravelAgent.class)
                 .streamingChatLanguageModel(chatModel)
-                // 为每个不同的 sessionId 分配独立的记忆盒子，最多记住最近 10 条对话
                 .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10))
                 .contentRetriever(contentRetriever)
+                .tools(travelTools) // 注入工具类
                 .build();
     }
 
-    // 3. 对外暴露聊天方法
     public TokenStream doChat(String message, String sessionId) {
-        return travelAgent.chat(sessionId, message);
+        String today = DateUtil.format(DateUtil.date(), "yyyy年MM月dd日") + " " + DateUtil.dayOfWeekEnum(DateUtil.date()).toChinese();
+        return travelAgent.chat(sessionId, today, message);
     }
 }
