@@ -1,6 +1,7 @@
 package com.org.aiagent.app;
 
 import cn.hutool.core.date.DateUtil;
+import com.org.aiagent.app.memory.RedisChatMemoryStore;
 import com.org.aiagent.app.tools.TravelTools;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
@@ -38,7 +39,8 @@ public class TravelAssistantService {
     public TravelAssistantService(ChatLanguageModel chatModel,
                                   EmbeddingStore<TextSegment> embeddingStore,
                                   EmbeddingModel embeddingModel,
-                                  TravelTools travelTools) {
+                                  TravelTools travelTools,
+                                  RedisChatMemoryStore redisChatMemoryStore) {
 
         EmbeddingStoreContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(embeddingStore)
@@ -49,7 +51,12 @@ public class TravelAssistantService {
 
         this.travelAgent = AiServices.builder(TravelAgent.class)
                 .chatLanguageModel(chatModel)
-                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10))
+                //弃用纯内存，换成我们自定义的 Redis 存储
+                .chatMemoryProvider(memoryId -> MessageWindowChatMemory.builder()
+                        .id(memoryId)
+                        .maxMessages(20) // 保留最近 20 条对话
+                        .chatMemoryStore(redisChatMemoryStore) // 挂载 Redis!
+                        .build())
                 .contentRetriever(contentRetriever)
                 .tools(travelTools)
                 .build();

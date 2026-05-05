@@ -64,3 +64,14 @@ services:
       - "8000:3000"
     depends_on:
       - "standalone"
+
+  # 这里是新增的 Redis 服务
+  redis:
+    image: redis:7.0-alpine
+    container_name: ai-agent-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - ./redis_data:/data
+    restart: always
