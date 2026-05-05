@@ -3,14 +3,14 @@ package com.org.aiagent.app;
 import cn.hutool.core.date.DateUtil;
 import com.org.aiagent.app.tools.TravelTools;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.MemoryId;
 import dev.langchain4j.service.SystemMessage;
-import dev.langchain4j.service.TokenStream;
 import dev.langchain4j.service.UserMessage;
+import dev.langchain4j.service.V;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.data.segment.TextSegment;
 import org.springframework.stereotype.Service;
@@ -24,18 +24,18 @@ public class TravelAssistantService {
                 "【核心原则】",
                 "1. 优先级最高：当前的真实时间（{{currentDate}}）是唯一准确的时间基准。如果知识库（PDF）里的建议与当前月份不符，请【绝对不要】采纳知识库里的旧建议。",
                 "2. 知识库使用规范：仅参考知识库中的景点描述、特色路线和避坑指南。如果知识库里提到‘现在是10月’，请忽略它，因为现在是5月。",
-                "3. 工具使用规范：只要涉及‘明天’、‘周末’或‘具体天气’，必须调用 getWeather 工具，严禁根据知识库的旧天气信息进行猜测。"
+                "3. 工具使用规范：只要涉及‘明天’、‘周末’或‘具体天气’，必须调用 getWeather 工具查询。注意：【只需查询旅行目的地的天气】，绝不查询出发地的天气，除非用户明确要求。"
         })
-        TokenStream chat(
+        String chat(
                 @MemoryId String sessionId,
-                @dev.langchain4j.service.V("currentDate") String currentDate,
+                @V("currentDate") String currentDate,
                 @UserMessage String userMessage
         );
     }
 
     private final TravelAgent travelAgent;
 
-    public TravelAssistantService(StreamingChatLanguageModel chatModel,
+    public TravelAssistantService(ChatLanguageModel chatModel,
                                   EmbeddingStore<TextSegment> embeddingStore,
                                   EmbeddingModel embeddingModel,
                                   TravelTools travelTools) {
@@ -48,15 +48,17 @@ public class TravelAssistantService {
                 .build();
 
         this.travelAgent = AiServices.builder(TravelAgent.class)
-                .streamingChatLanguageModel(chatModel)
+                .chatLanguageModel(chatModel)
                 .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10))
                 .contentRetriever(contentRetriever)
-                .tools(travelTools) // 注入工具类
+                .tools(travelTools)
                 .build();
     }
 
-    public TokenStream doChat(String message, String sessionId) {
-        String today = DateUtil.format(DateUtil.date(), "yyyy年MM月dd日") + " " + DateUtil.dayOfWeekEnum(DateUtil.date()).toChinese();
+    public String doChat(String message, String sessionId) {
+        String today = DateUtil.format(DateUtil.date(), "yyyy年MM月dd日") + " "
+                + DateUtil.dayOfWeekEnum(DateUtil.date()).toChinese();
+
         return travelAgent.chat(sessionId, today, message);
     }
 }

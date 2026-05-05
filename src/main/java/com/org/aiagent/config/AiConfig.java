@@ -2,7 +2,9 @@ package com.org.aiagent.config;
 
 
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.StreamingChatLanguageModel;
+import dev.langchain4j.model.dashscope.QwenChatModel;
 import dev.langchain4j.model.dashscope.QwenEmbeddingModel;
 import dev.langchain4j.model.dashscope.QwenStreamingChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -22,8 +24,8 @@ public class AiConfig {
 
     // 1. 注册通义千问流式对话大模型
     @Bean
-    public StreamingChatLanguageModel streamingChatModel() {
-        return QwenStreamingChatModel.builder()
+    public ChatLanguageModel chatModel() { // 注意：这里去掉了 Streaming
+        return QwenChatModel.builder()
                 .apiKey(apiKey)
                 .modelName("qwen-plus")
                 .build();
