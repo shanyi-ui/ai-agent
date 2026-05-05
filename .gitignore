@@ -50,3 +50,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Redis data snapshots
+redis_data/
+*.rdb
