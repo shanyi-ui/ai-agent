@@ -1,4 +1,4 @@
-package com.org.aiagent.app.advisor;
+package com.org.aiagent.aspect.advisor;
 
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * AI 提问安全前置拦截器 (Advisor)
  */
+//存放AOP安全拦截与审计
 @Aspect
 @Component
 public class ChatSecurityAdvisor {
@@ -23,7 +24,7 @@ public class ChatSecurityAdvisor {
     // 模拟敏感词库（实际企业开发中，这通常是从数据库或 Redis 中读取的）
     private static final List<String> SENSITIVE_WORDS = Arrays.asList("破解", "违法", "涉政", "机密","黄色","色情");
 
-    @Around("execution(* com.org.aiagent.app.TravelAssistantService.doChat(..))")
+    @Around("execution(* com.org.aiagent.service.TravelAssistantService.doChat(..))")
     public Object checkSecurity(ProceedingJoinPoint pjp) throws Throwable {
         Object[] args = pjp.getArgs();
 

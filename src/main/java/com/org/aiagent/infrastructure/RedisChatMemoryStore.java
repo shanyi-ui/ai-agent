@@ -1,4 +1,4 @@
-package com.org.aiagent.app.memory;
+package com.org.aiagent.infrastructure;
 
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.ChatMessageDeserializer;
@@ -17,6 +17,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * 企业级 Redis 记忆存储器
  */
+
+//持久对话记忆Redis存储
+
 @Component
 public class RedisChatMemoryStore implements ChatMemoryStore {
 

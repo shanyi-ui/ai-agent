@@ -1,8 +1,7 @@
 package com.org.aiagent.controller;
 
-import com.org.aiagent.app.TravelAssistantService;
-import com.org.aiagent.rag.TravelKnowledgeService;
-import org.springframework.http.MediaType;
+import com.org.aiagent.service.TravelAssistantService;
+import com.org.aiagent.service.TravelKnowledgeService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

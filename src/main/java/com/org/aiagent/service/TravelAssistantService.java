@@ -1,8 +1,8 @@
-package com.org.aiagent.app;
+package com.org.aiagent.service;
 
 import cn.hutool.core.date.DateUtil;
-import com.org.aiagent.app.memory.RedisChatMemoryStore;
-import com.org.aiagent.app.tools.TravelTools;
+import com.org.aiagent.infrastructure.RedisChatMemoryStore;
+import com.org.aiagent.infrastructure.TravelTools;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
@@ -15,6 +15,11 @@ import dev.langchain4j.service.V;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.data.segment.TextSegment;
 import org.springframework.stereotype.Service;
+
+
+//AI编排服务与prompt
+
+
 
 @Service
 public class TravelAssistantService {

@@ -1,4 +1,4 @@
-package com.org.aiagent.rag;
+package com.org.aiagent.service;
 
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
@@ -12,6 +12,12 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Paths;
+
+
+
+//RAG知识库管理
+
+
 
 @Service
 public class TravelKnowledgeService {

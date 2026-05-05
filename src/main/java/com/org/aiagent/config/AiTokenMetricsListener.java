@@ -1,4 +1,4 @@
-package com.org.aiagent.app.config;
+package com.org.aiagent.config;
 
 import dev.langchain4j.model.chat.listener.ChatModelErrorContext;
 import dev.langchain4j.model.chat.listener.ChatModelListener;

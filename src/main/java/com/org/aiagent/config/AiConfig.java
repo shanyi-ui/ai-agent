@@ -1,6 +1,5 @@
 package com.org.aiagent.config;
 
-import com.org.aiagent.app.config.AiTokenMetricsListener; // 确保导包路径正确
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.dashscope.QwenChatModel;

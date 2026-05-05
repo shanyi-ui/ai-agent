@@ -1,4 +1,4 @@
-package com.org.aiagent.app.tools;
+package com.org.aiagent.infrastructure;
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
@@ -8,6 +8,9 @@ import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+
+//查询天气和路径组件(心知天气和高德地图)
 
 @Component
 public class TravelTools {
@@ -26,7 +29,7 @@ public class TravelTools {
             @P("城市名称，例如：大理、北京") String city,
             @P("日期，例如：今天、明天、后天") String date) {
 
-        System.out.println("====== 🚨 触发工具调用: 天气查询 | 城市=" + city + ", 日期=" + date + " ======");
+        System.out.println("======  触发工具调用: 天气查询 | 城市=" + city + ", 日期=" + date + " ======");
 
         try {
             // 这里换成注入进来的 weatherApiKey
@@ -46,7 +49,7 @@ public class TravelTools {
             @P("出发城市，如：赣州市") String fromCity,
             @P("目的城市，如：大理白族自治州") String toCity) {
 
-        System.out.println("====== 🚨 触发工具调用: 交通查询 | 从 " + fromCity + " 到 " + toCity + " ======");
+        System.out.println("======  触发工具调用: 交通查询 | 从 " + fromCity + " 到 " + toCity + " ======");
 
         try {
             // 1. 将城市名称转换为经纬度坐标
