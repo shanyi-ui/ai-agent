@@ -10,32 +10,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/travel")
-@CrossOrigin // 解决前端跨域
+@CrossOrigin
 public class TravelController {
 
+    // 依赖注入的是 Service 接口，符合依赖倒置原则
     private final TravelAssistantService travelAssistantService;
     private final TravelKnowledgeService travelKnowledgeService;
 
-    // 构造函数注入
     public TravelController(TravelAssistantService travelAssistantService, TravelKnowledgeService travelKnowledgeService) {
         this.travelAssistantService = travelAssistantService;
         this.travelKnowledgeService = travelKnowledgeService;
     }
 
-    /**
-     * 对话接口 (自带多轮记忆 + 工具调用 + 知识库)
-     */
     @GetMapping("/chat")
     public String chat(@RequestParam(value = "message") String message,
                        @RequestParam(value = "sessionId", defaultValue = "user_test_999") String sessionId) {
-
-        // 直接返回字符串给前端
         return travelAssistantService.doChat(message, sessionId);
     }
 
-    /**
-     * 初始化 PDF 知识库接口
-     */
     @GetMapping("/init-knowledge")
     public String initKnowledge(@RequestParam String path) {
         return travelKnowledgeService.ingestPdfToMilvus(path);
