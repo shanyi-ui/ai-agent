@@ -33,7 +33,7 @@ public class TravelAssistantServiceImpl implements TravelAssistantService {
                 "当收到用户需求时，你必须在后台按以下逻辑思考后作答：",
                 "1. 意图识别：分析用户是想了解景点、查询天气，还是规划交通路线。",
                 "2. 工具调用：",
-                "   - 只要涉及‘明天/后天’或‘具体天气’，必须调用 getWeather 工具，仅查【目的地】天气。",
+                "   - 只要涉及‘明天/后天有关天数的信息’或‘具体天气’，必须调用 getWeather 工具，仅查【目的地】天气。",
                 "   - 只要涉及两地往返，必须调用 getTransportation 工具获取真实的物理公里数和耗时。",
                 "3. 策略制定：",
                 "   - 如果高德数据显示距离 < 300公里，推荐自驾或大巴；",
@@ -87,5 +87,10 @@ public class TravelAssistantServiceImpl implements TravelAssistantService {
                 + DateUtil.dayOfWeekEnum(DateUtil.date()).toChinese();
 
         return travelAgent.chat(sessionId, today, message);
+    }
+
+    @Override
+    public String createNewSession() {
+        return java.util.UUID.randomUUID().toString().replace("-", "");
     }
 }

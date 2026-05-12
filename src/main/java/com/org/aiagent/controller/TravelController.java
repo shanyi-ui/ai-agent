@@ -36,4 +36,12 @@ public class TravelController {
     public String initKnowledge(@RequestParam String path) {
         return travelKnowledgeService.ingestPdfToMilvus(path);
     }
+
+    /**
+     * 获取全新的会话 ID
+     */
+    @GetMapping("/new-session")
+    public String newSession() {
+        return travelAssistantService.createNewSession();
+    }
 }

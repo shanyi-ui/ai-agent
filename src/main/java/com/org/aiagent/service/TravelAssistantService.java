@@ -13,4 +13,11 @@ public interface TravelAssistantService {
      * @return AI 的回复内容
      */
     String doChat(String message, String sessionId);
+
+
+    /**
+     * 创建新的对话狂
+     * @return
+     */
+    String createNewSession();
 }
