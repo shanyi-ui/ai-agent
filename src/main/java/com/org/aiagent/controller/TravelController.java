@@ -2,11 +2,9 @@ package com.org.aiagent.controller;
 
 import com.org.aiagent.service.TravelAssistantService;
 import com.org.aiagent.service.TravelKnowledgeService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/travel")
@@ -22,9 +20,15 @@ public class TravelController {
         this.travelKnowledgeService = travelKnowledgeService;
     }
 
-    @GetMapping("/chat")
-    public String chat(@RequestParam(value = "message") String message,
-                       @RequestParam(value = "sessionId", defaultValue = "user_test_999") String sessionId) {
+    /**
+     * 对话接口
+     */
+    @PostMapping("/chat")
+    public String chat(@RequestBody Map<String, String> request) {
+        // 从 JSON 中提取参数
+        String message = request.get("message");
+        String sessionId = request.getOrDefault("sessionId", "user_test_999");
+
         return travelAssistantService.doChat(message, sessionId);
     }
 

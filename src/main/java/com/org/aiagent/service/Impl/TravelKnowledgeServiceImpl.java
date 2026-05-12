@@ -28,7 +28,7 @@ public class TravelKnowledgeServiceImpl implements TravelKnowledgeService {
     private final EmbeddingStoreIngestor ingestor;
 
     public TravelKnowledgeServiceImpl(EmbeddingStore<TextSegment> embeddingStore, EmbeddingModel embeddingModel) {
-        // PDF 文本清洗器
+        // PDF 文本清洗器(通过正则表达式将一些PDF文件常见的“噪音去除(例如页眉、页脚、页码甚至乱码)”)
         TextSegmentTransformer textCleaner = segment -> TextSegment.from(
                 segment.text().replaceAll("\\s+", " ").trim(),
                 segment.metadata()

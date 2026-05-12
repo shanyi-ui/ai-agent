@@ -21,9 +21,9 @@ public class AiTokenMetricsListener implements ChatModelListener {
     private final ThreadLocal<Long> startTime = new ThreadLocal<>();
 
     // 费率设定：更新为 Qwen-Plus 官方单价
-    // 输入单价：0.004元 / 1000 Tokens [参考 Qwen-Plus 最新计费标准]
+    // 输入单价：0.004元 / 1000 Tokens
     private static final BigDecimal INPUT_PRICE_PER_THOUSAND = new BigDecimal("0.004");
-    // 输出单价：0.012元 / 1000 Tokens [参考 Qwen-Plus 最新计费标准]
+    // 输出单价：0.012元 / 1000 Tokens
     private static final BigDecimal OUTPUT_PRICE_PER_THOUSAND = new BigDecimal("0.012");
 
     @Override
@@ -44,7 +44,7 @@ public class AiTokenMetricsListener implements ChatModelListener {
 
             BigDecimal cost = calculateCost(input, output);
 
-            // 极简冷淡风日志：耗时 | Token明细 | 金额
+            // 日志：耗时 | Token明细 | 金额
             log.info("[LLM] {}ms | tokens: {} in, {} out, {} total | cost: ￥{}",
                     costTime, input, output, total, cost);
         }

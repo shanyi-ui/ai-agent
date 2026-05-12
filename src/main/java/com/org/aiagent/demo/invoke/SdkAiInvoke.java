@@ -13,8 +13,6 @@ import com.alibaba.dashscope.exception.NoApiKeyException;
 import com.alibaba.dashscope.utils.JsonUtils;
 
 public class SdkAiInvoke {
-    //  若使用新加坡地域的模型，请释放下列注释
-    //  static {Constants.baseHttpApiUrl="https://dashscope-intl.aliyuncs.com/api/v1";}
     public static GenerationResult callWithMessage() throws ApiException, NoApiKeyException, InputRequiredException {
         Generation gen = new Generation();
         Message systemMsg = Message.builder()
@@ -26,7 +24,7 @@ public class SdkAiInvoke {
                 .content("")
                 .build();
         GenerationParam param = GenerationParam.builder()
-                // 若没有配置环境变量，请用阿里云百炼API Key将下行替换为：.apiKey("sk-xxx")
+                //配置大模型
                 .apiKey(TestApiKey.API_KEY)
                 // 模型列表：https://help.aliyun.com/model-studio/getting-started/models
                 .model("qwen-plus")

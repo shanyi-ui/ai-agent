@@ -1,18 +1,18 @@
 package com.org.aiagent.demo.invoke;
 
-import dev.langchain4j.model.chat.ChatLanguageModel; //
-import jakarta.annotation.Resource; //
-import org.springframework.boot.CommandLineRunner; //[cite: 3]
-import org.springframework.stereotype.Component; //[cite: 3]
+import dev.langchain4j.model.chat.ChatLanguageModel;
+import jakarta.annotation.Resource;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 /**
  * LangChain4j 启动自检测试类
- * 已修改为非流式调用，以支持 Tools 功能[cite: 3]
+ * 已修改为非流式调用，以支持 Tools 功能
  */
 @Component
 public class LangchainAiInvoke implements CommandLineRunner {
 
-    // 注入我们在 AiConfig 中配置好的非流式模型[cite: 3]
+    // 注入我们在 AiConfig 中配置好的非流式模型
     @Resource
     private ChatLanguageModel chatModel;
 
